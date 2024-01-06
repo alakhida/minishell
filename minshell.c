@@ -6,7 +6,7 @@
 /*   By: alakhida <alakhida@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 22:59:18 by alakhida          #+#    #+#             */
-/*   Updated: 2024/01/04 18:46:00 by alakhida         ###   ########.fr       */
+/*   Updated: 2024/01/06 01:52:52 by alakhida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,13 +76,20 @@ void ft_echo(int argc, char **argv) {
 	av->args = argv;
 	if (ft_strcmp(av->args[1], "echo") == 0)
 	{
+		if (ft_strcmp(av->args[2], NULL) == 0)
+			return ;
 		if (echo_opt(av->args) == 0)
 		{
 			newline = true;
 			argc--;
 			av->args++;
 		}
-		i = 2;
+		else
+		
+			argc--;
+			i = 1;
+			av->args++;
+		}
 	while (i < argc)
 	{
 		ft_putstr(av->args[i]);
@@ -96,18 +103,23 @@ void ft_echo(int argc, char **argv) {
 }
 
 
-// int main(int ac, char **av)
-// {
-// 	t_minishell *p;
+int main(int ac, char **av)
+{
+	t_minishell *p;
 
-// 	if (ac > 1)
-// 	{
-// 		p = (t_minishell *)malloc(sizeof(t_minishell));
-// 		if (p)
-// 		{
-// 			p->args = av;
-// 			ft_echo(ac, p->args);
-// 		}
-// 	}
+	//p = calloc(1, sizeof(t_minishell));
+	// p[0].args = ft_split("echo -n hello");
 	
-// }
+	//p->args = av;
+	//exec(p);
+	if (ac > 1)
+	{
+	p = (t_minishell *)malloc(sizeof(t_minishell));
+		if (p)
+		{
+			p->args = av;
+			ft_echo(ac, p->args);
+		}
+	}
+	
+}

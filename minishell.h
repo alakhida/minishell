@@ -6,7 +6,7 @@
 /*   By: alakhida <alakhida@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 22:52:54 by alakhida          #+#    #+#             */
-/*   Updated: 2024/01/04 23:04:14 by alakhida         ###   ########.fr       */
+/*   Updated: 2024/01/06 00:19:54 by alakhida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <errno.h>
 
 typedef enum e_redir {
 	DIR_IN,
@@ -30,6 +31,7 @@ typedef struct s_minishell
 	char **args;
 	char *outfile;
 	char *infile;
+	char *current_dir;
 	enum e_redir in_type;
 	enum e_redir out_type;
 	 struct t_minishell *next;
