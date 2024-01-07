@@ -39,6 +39,14 @@ typedef struct s_minishell
 
 typedef struct s_envp {
 	char *data;
-	struct t_envp *next;
+	struct s_envp *next;
 } t_envp;
 
+int			echo_opt(const char *av);
+int			ft_strcmp(char *s1, char *s2);
+int			ft_strlen(char *s);
+char		*ft_strdup(char *src);
+void		ft_putstr(char *s);
+t_envp		*dup_env(char **envp);
+t_envp		*create_node(char *envp);
+t_envp		*remove_env_variable(t_envp *data, const char *key);

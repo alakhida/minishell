@@ -1,6 +1,6 @@
 NAME = minishell
 
-SRC = main.c
+SRC = main.c utils.c dupenv.c
 
 OBJ = $(SRC:.c=.o)
 
