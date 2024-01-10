@@ -5,8 +5,8 @@ SRC = main.c utils.c dupenv.c
 OBJ = $(SRC:.c=.o)
 
 CC = cc
-
-CFLAGS = -Wall -Wextra -Werror
+#-Wall -Wextra -Werror
+CFLAGS = #-g -fsanitize=address
 
 RM = rm -f
 

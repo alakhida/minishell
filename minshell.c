@@ -6,7 +6,7 @@
 /*   By: alakhida <alakhida@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 22:59:18 by alakhida          #+#    #+#             */
-/*   Updated: 2024/01/06 01:52:52 by alakhida         ###   ########.fr       */
+/*   Updated: 2024/01/07 04:08:14 by alakhida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,5 +121,43 @@ int main(int ac, char **av)
 			ft_echo(ac, p->args);
 		}
 	}
+	t_envp *export_env_variable(char **av, t_envp *data)
+{
+	int		i;
+	char	*key;
+	char	*value;
+	char	*envp;
+
+	i = 0;
+	key = NULL;
+	value = NULL;
+	envp = NULL;
+	if (ft_strcmp(av[1], "export") == 0)
+	{
+		while (av[i] != NULL)
+		{
+			if (ft_strchr(av[i], '='))
+			{
+				key = ft_get_the_Key(av[i]);
+				value = ft_get_the_Value(av[i]);
+				if (key != NULL && value != NULL)
+				{
+				 //	envp = ft_strjoin(key, "=");
+					if (!envp)
+						return (NULL);
+					envp = ft_strjoin(envp, value);
+				// 	if (!envp)
+				// 		return (NULL);
+				 	data = add_env_variable(data, envp);
+				// 	if (!data)
+				// 		return (NULL);
+				}
+			}
+			i++;
+		}
+	}
+	return (data);
+}
+
 	
 }

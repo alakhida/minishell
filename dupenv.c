@@ -11,59 +11,60 @@
 // 	}
 // 	return (i);
 // }
+// t_envp *ft_unset(t_envp *data, t_minishell *av) {
+//     int i = ft_strlen(av->args[2]);
+
+//     if (ft_strcmp(av->args[1], "unset") == 0 && av->args[2] != NULL) {
+//         t_envp *current = data;
+//         t_envp *prev = NULL;
+
+//         while (current != NULL) {
+//             if (ft_strncmp(current->data, av->args[2], i) == 0) {
+//                 if (prev == NULL) {
+//                     data = current->next;
+//                 } else {
+//                     prev->next = current->next;
+//                 }
+//                 free(current);
+//                 break;
+//             } else {
+//                 prev = current;
+//                 current = current->next;
+//             }
+//         }
+//     }
+
+//     return data;
+// }
 
 
 
 
-char *ft_get_the_Key(char *envp)
-{
-	int		i = 0;
-	char	*key;
+// char *ft_get_the_Key(char *envp)
+// {
+// 	int		i = 0;
+// 	char	*key;
 
-	while(envp[i])
-	{
-		if (envp[i] == '=')
-			break;
-		i++;
-	}
-	key = malloc(sizeof(char) * i);
-	i = 0;
-	while(envp[i])
-	{
-		if (envp[i] == '=')
-			break;
-		key[i] = envp[i];
-		i++;
-	}
-	return (key);
-}
+// 	while(envp[i])
+// 	{
+// 		if (envp[i] == '=')
+// 			break;
+// 		i++;
+// 	}
+// 	key = malloc(sizeof(char) * i);
+// 	i = 0;
+// 	while(envp[i])
+// 	{
+// 		if (envp[i] == '=')
+// 			break;
+// 		key[i] = envp[i];
+// 		i++;
+// 	}
+// 	return (key);
+// }
 
-char *ft_get_the_Value (char *envp)
-{
-	int		i = 0;
-	int		j = 0;
-	char	*value;
 
-	if (envp == NULL)
-		return (NULL);
-	if (!strchr(envp, '='))
-		return (NULL);
-	while(envp[i])
-	{
-		if (envp[i] == '=')
-			break;
-		i++;
-	}
-	value = malloc(sizeof(char) * (ft_strlen(envp) - i));
-	i++;
-	while(envp[i])
-	{
-		value[j] = envp[i];
-		i++;
-		j++;
-	}
-	return (value);
-}
+
 t_envp	*create_node(char *envp)
 {
 	t_envp *tmp;
@@ -107,49 +108,3 @@ t_envp* dup_env(char **envp)
 	return (resault);
 }
 
-// t_envp *add_env_variable(t_envp *data, char *envp)
-// {   
-// 	t_envp  *newnode;
-
-// 	if (data == NULL)
-//         return (create_node(envp));
-// 	else {
-//     newnode = create_node((envp));
-//         newnode->next = data;
-//         return newnode;
-//     }
-// }
-
-t_envp *remove_env_variable(t_envp *data, const char *key) {
-    t_envp *prev;
-    t_envp *current;
-    t_envp *ndata;
-	t_envp *nextnode;
-	
-	ndata = data;
-	current = data;
-	prev = NULL;
-    while (current != NULL) {
-        if (strcmp(key, ft_get_the_Key(current->data)) == 0) 
-		{
-            nextnode = current->next;
-            if (prev == NULL)
-			{
-                free(current);
-                return(nextnode);
-            }
-			else
-			{
-                prev->next = nextnode;
-                free(current);
-                return (ndata);
-            }
-        } 
-		else
-		{
-            prev = current;
-            current = current->next;
-        }
-    }
-    return ndata;
-}
