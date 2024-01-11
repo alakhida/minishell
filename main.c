@@ -232,69 +232,71 @@ t_envp	*ft_unset(t_envp *data, t_minishell *av)
 // 	}
 // }
 
-// void	print_export(t_envp *envp)
-// {
-// 	t_envp *current;
+void	print_export(t_envp *envp)
+{
+	t_envp *current;
 
-// 	current = envp;
-// 	while(current != NULL)
-// 	{
-// 		if (current->is_exported == 1)
-// 		printf("hhhh");
-// 			if (current->data != NULL)
-// 				printf("declare -x %s\n", current->data);
-// 		current = current->next;
-// 	}
-// }
+	current = envp;
+	while(current != NULL)
+	{
+			if (current->data != NULL)
+				printf("declare -x %s\n", current->data);
+		current = current->next;
+	}
+}
 
-// t_envp *ft_export(t_envp *data, t_minishell *av)
-// {
-// 	t_envp *current;
-// 	t_envp *prev;
-// 	t_envp *tmp;
-// 	int		i;
+t_envp *ft_export(t_envp *data, t_minishell *av)
+{
+	t_envp *current;
+	int		i;
+	char	*tmp;
 
-// 	prev = NULL;
-// 	if (ft_strcmp(av->args[1], "export") == 0)
-// 	{
-// 	current = data;
-// 	// if (av->args[2] == NULL)
-// 	// {
-// 	// 	print_export(data);
-// 	// 	printf("export\n");
-// 	// }
-// 	if (av->args[2] != NULL)
-// 	{
-// 	while (current != NULL)
-// 	{
-// 	if (current != NULL && ft_strncmp(current-en(av->args[2])) == 0)
-// 	{
-// 		current->is_exported = 1;
-// 		tmp = current->next;
-// 		if (prev == NULL)
-// 		{
-// 				free (current->data);
-// 				free (current);
-// 				data = tmp;
-// 		}
-// 		else
-// 		{
-// 			prev->next = tmp;
-// 			free (current->data);
-// 			free (current);
-// 		}
-// 	}
-// 	else
-// 		prev = current;
-// 	}
-// 		current = current->next;
-// 	}
-// 	}
-// 	return (data);
+	if (ft_strcmp(av->args[1], "export") == 0)
+	{
+	current = data;
+	if (av->args[2] == NULL)
+	{
+		print_export(data);
+		return (data);
+	}
+	else
+	{
+		tmp = ft_get_the_Key(av->args[2]);
+		i = ft_strlen(tmp);
+		if (ft_strchr(av->args[2], '=') == NULL)
+			return (data);
+		else
+		if (ft_strncmp(current->data, tmp, i) == 0)
+		{
+			data = remove_env_variable(data, tmp);
+			data = add_env_variable(data, av->args[2]);
+		}
+		else
+			data = add_env_variable(data, av->args[2]);
+	}
+	}
+	return (data);
+}
 
-// }
+t_envp *ft_exit(t_envp *data, t_minishell *av)
+{
+	int	i;
 
-
+	i = 0;
+	if (ft_strcmp(av->args[1], "exit") == 0)
+	{
+		while (data != NULL)
+		{
+			free(data->data);
+			free(data);
+			data = data->next;
+		}
+		free (av);
+		printf("exiting...\n");
+		exit(0);
+	}
+	return (data);
+}
 
 t_envp *ft_change_directory(t_envp *data,t_minishell *av)
 {
@@ -343,11 +345,12 @@ t_envp *ft_change_directory(t_envp *data,t_minishell *av)
 		data = add_env_variable(data, tmp);
 		//data = remove_env_variable(data, "PWD");
 		free(tmp);
+		pwd = getcwd(NULL, 0);
 		tmp = ft_strjoin("PWD=", pwd);
 		if (!tmp)
 			return (NULL);
-		data = add_env_variable(data, tmp);
 		data = remove_env_variable(data, "PWD");
+		data = add_env_variable(data, tmp);
 		free(tmp);
 		free(oldpwd);
 		free(pwd);
@@ -380,13 +383,15 @@ int main(int ac, char **av, char **enviroment)
 	// 	hold = hold->next;
 	// }
 	hold = ft_change_directory(hold, arg);
-	printf("%s\n", getcwd(NULL, 0));
-	printf("after\n");
-	// while (hold != NULL) {
-	// 	printf("%s\n", hold->data);
-	// 	hold = hold->next;
-	// }
-//	hold = ft_export(hold,arg);
+	hold = ft_export(hold, arg);
+	hold = ft_exit(hold, arg);
+	// printf("%s\n", getcwd(NULL, 0));
+	// printf("after\n");
+// 	while (hold != NULL) {
+// 		printf("%s\n", hold->data);
+// 		hold = hold->next;
+// 	}
+// //	hold = ft_export(hold,arg);
         // printf("After unset:\n");
         // while (hold != NULL) {
         //     printf("%s\n", hold->data);
