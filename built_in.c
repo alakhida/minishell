@@ -1,23 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isalnum.c                                       :+:      :+:    :+:   */
+/*   built_in.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alakhida <alakhida@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/02 11:53:33 by alakhida          #+#    #+#             */
-/*   Updated: 2024/01/15 03:48:20 by alakhida         ###   ########.fr       */
+/*   Created: 2024/01/15 04:47:10 by alakhida          #+#    #+#             */
+/*   Updated: 2024/01/15 04:48:25 by alakhida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-int	ft_isalnum(int c)
+void ft_echo(int argc, t_minishell *av) 
 {
-	if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
+    int newline;
+	int		i;
+
+	newline = 0;
+	i = 2;
+	if (ft_strcmp(av->args[1], "echo") == 0)
 	{
-		return (1);
+	if (av->args[2] != NULL)
+		if (echo_opt(av->args[2]) == 0)
+			{
+			i+= 1;
+			newline = 1;
+			}
+	while (i < argc)
+	{
+		ft_putstr(av->args[i]);
+		if (i < argc - 1)
+			write(1, " ", 1);
+		i++;
 	}
-	else
-		return (0);
+    if (newline == 0)
+		write(1,"\n",1);
+	}
 }

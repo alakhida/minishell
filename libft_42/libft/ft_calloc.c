@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alakhida <alakhida@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: alakhida <alakhida@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 22:44:31 by alakhida          #+#    #+#             */
-/*   Updated: 2022/11/03 23:12:38 by alakhida         ###   ########.fr       */
+/*   Updated: 2024/01/15 03:47:01 by alakhida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,19 @@
 
 void	*ft_calloc(size_t count, size_t size)
 {
-	char			*dst;
-	unsigned int	t;
+	char			*result;
+	unsigned int	len;
 	unsigned int	i;
 
-	t = count * size;
-	dst = malloc(t);
-	if (!dst)
+	len = count * size;
+	result = malloc(len);
+	if (!result)
 		return (NULL);
 	i = 0;
-	while (t--)
+	while (len--)
 	{
-		dst[i] = 0;
+		result[i] = 0;
 		i++;
 	}
-	return ((void *)dst);
+	return ((void *)result);
 }

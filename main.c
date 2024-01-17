@@ -14,32 +14,6 @@ void	ft_env(t_envp *envp)
 		envp = envp->next;
 	}
 }
-void ft_echo(int argc, t_minishell *av) 
-{
-    int newline;
-	int		i;
-
-	newline = 0;
-	i = 2;
-	if (ft_strcmp(av->args[1], "echo") == 0)
-	{
-	if (av->args[2] != NULL)
-		if (echo_opt(av->args[2]) == 0)
-			{
-			i+= 1;
-			newline = 1;
-			}
-	while (i < argc)
-	{
-		ft_putstr(av->args[i]);
-		if (i < argc - 1)
-			write(1, " ", 1);
-		i++;
-	}
-    if (newline == 0)
-		write(1,"\n",1);
-	}
-}
 
 t_envp *add_env_variable(t_envp *data, char *envp)
 {   
@@ -129,41 +103,30 @@ char *ft_get_the_Key(char *envp)
 		i++;
 	}
 	key[i] = '\0';
+	//free (envp);
 	return (key);
 }
 
-t_envp *remove_env_variable(t_envp *data, const char *key) {
-    t_envp *prev;
+void remove_env_variable(t_envp *data, const char *key) {
     t_envp *current;
-    t_envp *ndata;
-	t_envp *nextnode;
-	
-	ndata = data;
+	t_envp *prev;
+
 	current = data;
 	prev = NULL;
-    while (current != NULL) {
-        if (strcmp(key, ft_get_the_Key(current->data)) == 0) 
-		{
-            nextnode = current->next;
-            if (prev == NULL)
-			{
-                free(current);
-                return(nextnode);
-            }
+	while (current != NULL) {
+		if (ft_strncmp(current->data, key, ft_strlen(key)) == 0) {
+			if (prev == NULL)
+				data = current->next;
 			else
-			{
-                prev->next = nextnode;
-                free(current);
-                return (ndata);
-            }
-        } 
-		else
-		{
-	        prev = current;
-            current = current->next;
-        }
-    }
-    return ndata;
+				prev->next = current->next;
+			free(current->data);
+			free(current);
+			break;
+		} else {
+			prev = current;
+			current = current->next;
+		}
+	}
 }
 
 
@@ -185,13 +148,9 @@ void	ft_unset(t_envp **data, t_minishell *av)
 			if (ft_strncmp(current->data, av->args[1], i) == 0)
 			{
 				if (prev == NULL)
-				{
 					*data = current->next;
-				}
 				else
-				{
 					prev->next = current->next;
-				}
 				free (current->data);
 				free (current);
 				break;
@@ -238,32 +197,48 @@ void	print_export(t_envp *envp)
 	}
 }
 
-void	ft_export(t_envp **data, t_minishell *av)
+void	ft_export(t_envp *data, t_minishell *av)
 {
 	t_envp *current;
 	int		i;
 	char	*tmp;
 
-	current = *data;
-	if (av->args[1] == NULL)
+	current = data;
+		av->has_no_option = false;
+	if (av->has_no_option == true)
 	{
-		print_export(*data);
+		print_export(data);
 		return;
 	}
 	else
 	{
-		tmp = ft_get_the_Key(av->args[1]);
+		 tmp = ft_get_the_Key(av->args[0]);
 		i = ft_strlen(tmp);
-		if (ft_strchr(av->args[1], '=') == NULL)
-			return;
-		else
+		if (ft_strchr(av->args[0], '=') == NULL)
+			 return;
+		 else
+		while (current != NULL)
+		{
 		if (ft_strncmp(current->data, tmp, i) == 0)
 		{
-			*data = remove_env_variable(*data, tmp);
-			*data = add_env_variable(*data, av->args[1]);
+			// printf("%s\n", tmp);
+			remove_env_variable(data, tmp);
+			add_env_variable(data, av->args[0]);
+			break;
 		}
 		else
-			*data = add_env_variable(*data, av->args[1]);
+			{
+			data = add_env_variable(data, av->args[0]);
+			break;
+			}
+		current = current->next;
+		}
+		while (data != NULL)
+		{
+			printf("%s\n", data->data);
+			data = data->next;
+
+		}
 	}
 }
 
@@ -272,18 +247,16 @@ t_envp *ft_exit(t_envp *data, t_minishell *av)
 	int	i;
 
 	i = 0;
-	if (ft_strcmp(av->args[1], "exit") == 0)
-	{
+
 		while (data != NULL)
 		{
 			free(data->data);
 			free(data);
 			data = data->next;
+			free (av);
+			printf("exiting...\n");
+			exit(0);
 		}
-		free (av);
-		printf("exiting...\n");
-		exit(0);
-	}
 	return (data);
 }
 
@@ -337,7 +310,7 @@ t_envp *ft_change_directory(t_envp *data,t_minishell *av)
 		tmp = ft_strjoin("PWD=", pwd);
 		if (!tmp)
 			return (NULL);
-		data = remove_env_variable(data, "PWD");
+		remove_env_variable(data, "PWD");
 		data = add_env_variable(data, tmp);
 		free(tmp);
 		free(oldpwd);
@@ -451,9 +424,11 @@ void	execbuiltin(t_minishell *arg, char *cmd, t_envp *hold)
 	if (!ft_strcmp(cmd, "env"))
 		ft_env(hold);
 	else if (!ft_strcmp(cmd, "export"))
-		ft_export(&hold, arg);
+		ft_export(hold, arg);
 	else if (!ft_strcmp(cmd, "unset"))
 		ft_unset(&hold, arg);
+	// else if (!ft_strcmp(cmd, "echo"))
+	// 	ft_echo()
 	if (arg->prev->pipe == true)
 		exit(0);
 }
