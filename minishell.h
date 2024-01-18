@@ -6,7 +6,7 @@
 /*   By: alakhida <alakhida@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 22:52:54 by alakhida          #+#    #+#             */
-/*   Updated: 2024/01/18 01:39:36 by alakhida         ###   ########.fr       */
+/*   Updated: 2024/01/18 08:22:06 by alakhida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,17 @@ typedef struct s_envp {
 	struct s_envp *next;
 } t_envp;
 
+char		*ft_get_the_Key(char *envp);
 int			echo_opt(const char *av);
 void		ft_echo(int argc, t_minishell *av);
 void		print_export(t_envp *envp);
 void		remove_env_variable(t_envp **data, const char *key);
 void		ft_export(t_envp **data, t_minishell *av);
 void		add_env_variable(t_envp **data, char *envp);
-char		*ft_get_the_Key(char *envp);
+void		ft_unset(t_envp **data, t_minishell *av);
+t_envp		*ft_change_directory(t_envp *data,t_minishell *av);
+t_envp		*dup_env(char **envp);
+t_envp		*create_node(char *envp);
 
 // int			ft_strcmp(char *s1, char *s2);
 // int			ft_strlen(char *s);
@@ -67,7 +71,5 @@ char		*ft_get_the_Key(char *envp);
 // char		*ft_strjoin(char *s1, char *s2);
 // char		*ft_strtok(char *str, char *delim);
 // void		ft_putstr(char *s);
-t_envp		*dup_env(char **envp);
-t_envp		*create_node(char *envp);
 // void	*ft_calloc(size_t count, size_t size);
 

@@ -107,43 +107,6 @@ char *ft_get_the_Key(char *envp)
 	return (key);
 }
 
-
-
-
-void	ft_unset(t_envp **data, t_minishell *av)
-{
-	t_envp *current;
-	t_envp *prev;
-	int		i;
-
-	current = *data;
-	prev = NULL;
-	if (av->args[1] == NULL)
-		return;
-	i = ft_strlen(av->args[1]);
-	if (av->args[1] != NULL)
-	{
-		while(current != NULL)
-		{
-			if (ft_strncmp(current->data, av->args[1], i) == 0)
-			{
-				if (prev == NULL)
-					*data = current->next;
-				else
-					prev->next = current->next;
-				free (current->data);
-				free (current);
-				break;
-			}
-			else
-			{
-				prev = current;
-				current = current->next;
-			}
-		}
-	}
-}
-
 // t_envp *ft_get_exported(t_envp *data)
 // {
 // 	t_envp *current;
@@ -184,65 +147,8 @@ t_envp *ft_exit(t_envp *data, t_minishell *av)
 	return (data);
 }
 
-t_envp *ft_change_directory(t_envp *data,t_minishell *av)
-{
-	t_envp *current;
-	t_envp *prev;
-	char	*pwd;
-	char	*oldpwd;
-	char	*tmp;
+// void	ft_change_directory(t_envp *data)
 
-	prev = NULL;
-	current = data;
-	if (ft_strcmp(av->args[1], "cd") == 0)
-	{
-		if (av->args[2] == NULL)
-		{
-			while (current != NULL)
-			{
-				if (ft_strncmp(current->data, "HOME=", 5) == 0)
-				{
-					pwd = ft_strdup(current->data + 5);
-					if (!pwd)
-						return (NULL);
-					break;
-				}
-				current = current->next;
-			}
-		}
-		else
-		{
-			pwd = ft_strdup(av->args[2]);
-			if (!pwd)
-				return (NULL);
-		}
-		oldpwd = getcwd(NULL, 0);
-		if (!oldpwd)
-			return (NULL);
-		if (chdir(pwd) == -1)
-		{
-			printf("cd: %s: No such file or directory\n", pwd);
-			return (NULL);
-		}
-		tmp = ft_strjoin("OLDPWD=", oldpwd);
-		if (!tmp)
-			return (NULL);
-		add_env_variable(&data, tmp);
-		//data = remove_env_variable(data, "PWD");
-		free(tmp);
-		pwd = getcwd(NULL, 0);
-		tmp = ft_strjoin("PWD=", pwd);
-		if (!tmp)
-			return (NULL);
-		remove_env_variable(&data, "PWD");
-		add_env_variable(&data, tmp);
-		free(tmp);
-		free(oldpwd);
-		free(pwd);
-	}
-	// printf("%s\n", getcwd(NULL, 0));
-	return (data);
-}
 
 // int main(int ac, char **av, char **enviroment)
 // {
@@ -352,6 +258,12 @@ void	execbuiltin(t_minishell *arg, char *cmd, t_envp **hold)
 		ft_export(hold, arg);
 	else if (!ft_strcmp(cmd, "unset"))
 		ft_unset(hold, arg);
+	else if (!ft_strcmp(cmd, "cd"))
+		ft_change_directory(hold, arg);
+	// else if (!ft_strcmp(cmd, "pwd"))
+	// 	ft_pwd(arg->args, *hold);
+	// else if (!ft_strcmp(cmd, "exit"))
+	// 	*hold = ft_exit(*hold, arg);
 	// else if (!ft_strcmp(cmd, "echo"))
 	// 	ft_echo()
 	if (arg->prev->pipe == true)

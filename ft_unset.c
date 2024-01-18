@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alakhida <alakhida@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/02 12:50:58 by alakhida          #+#    #+#             */
-/*   Updated: 2024/01/18 04:48:15 by alakhida         ###   ########.fr       */
+/*   Created: 2024/01/18 04:47:19 by alakhida          #+#    #+#             */
+/*   Updated: 2024/01/18 06:57:12 by alakhida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-size_t	ft_strlen(const char *s)
+void ft_unset(t_envp **data, t_minishell *av)
 {
-	int	len;
+	int i;
 
-	len = 0;
-	if (s == NULL)
-		return (0);
-	while (s[len] != '\0')
-		len++;
-	return (len);
+	i = 0;
+	while (av->args[i])
+	{
+		remove_env_variable(data, av->args[i]);
+		i++;
+	}
 }

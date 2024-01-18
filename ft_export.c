@@ -6,7 +6,7 @@
 /*   By: alakhida <alakhida@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 22:08:08 by alakhida          #+#    #+#             */
-/*   Updated: 2024/01/18 03:56:00 by alakhida         ###   ########.fr       */
+/*   Updated: 2024/01/18 06:59:21 by alakhida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,22 @@
 
 bool	key_cmp(const char *s1, const char *s2)
 {
-	puts("1");
 	int i = 0;
 	if (!s1 || !s2)
 		return 1;
-	puts("2");
 	while (s1[i] && s2[i])
 	{
 		if (s1[i] != s2[i])
 			return 1;
 		i++;
 	}
-	puts("3");
 	if (!s2[i] && s1[i] && s1[i] != '=')
 		return 1;
-	puts("4");
 	return 0;
 };
 
-void remove_env_variable(t_envp **data, const char *key) {
+void remove_env_variable(t_envp **data, const char *key)
+{
     t_envp *current;
 	t_envp *prev;
 
@@ -128,7 +125,6 @@ void	ft_export(t_envp **data, t_minishell *av)
 
 	current = *data;
 	i = 0;
-	// printf("%s\n", av->args[0]);
 	if (av->args[i] == NULL)
 	{
 		print_export(*data);
@@ -143,14 +139,10 @@ void	ft_export(t_envp **data, t_minishell *av)
 		else
 		if (already_exist(data, ft_get_the_Key(av->args[0])) == true)
 		{
-			// printf("%s\n", tmp);
 			remove_env_variable(data, tmp);
 			add_env_variable(data, av->args[0]);
 		}
 		else
-		{
-			// puts("here");
 			add_env_variable(data, av->args[0]);
-		}
 	}
 }
