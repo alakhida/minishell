@@ -1,34 +1,34 @@
 #include "minishell.h"
 
 
-void	ft_env(t_envp *envp)
+void	ft_env(t_envp **envp)
 {
 	int		i;
 	char	*pwd;
 
 	i = 0;
 	pwd = NULL;
-	while(envp != NULL)
+	while(*envp != NULL)
 	{
-		printf("%s\n", envp->data);
-		envp = envp->next;
+		printf("%s\n", (*envp)->data);
+		*envp = (*envp)->next;
 	}
 }
 
-t_envp *add_env_variable(t_envp *data, char *envp)
-{   
-	t_envp  *newnode;
+// t_envp *add_env_variable(t_envp *data, char *envp)
+// {   
+// 	t_envp  *newnode;
 
-	newnode = (t_envp *)malloc(sizeof(t_envp));
-	if (!newnode)
-		return (0);
-	newnode->data = ft_strdup(envp);
-	if (!newnode->data)
-		return (0);
-	newnode->next = data;
-	data = newnode;
-	return (data);
-}
+// 	newnode = (t_envp *)malloc(sizeof(t_envp));
+// 	if (!newnode)
+// 		return (0);
+// 	newnode->data = ft_strdup(envp);
+// 	if (!newnode->data)
+// 		return (0);
+// 	newnode->next = data;
+// 	data = newnode;
+// 	return (data);
+// }
 
 
 char *ft_get_the_Value (char *envp)
@@ -107,27 +107,7 @@ char *ft_get_the_Key(char *envp)
 	return (key);
 }
 
-void remove_env_variable(t_envp *data, const char *key) {
-    t_envp *current;
-	t_envp *prev;
 
-	current = data;
-	prev = NULL;
-	while (current != NULL) {
-		if (ft_strncmp(current->data, key, ft_strlen(key)) == 0) {
-			if (prev == NULL)
-				data = current->next;
-			else
-				prev->next = current->next;
-			free(current->data);
-			free(current);
-			break;
-		} else {
-			prev = current;
-			current = current->next;
-		}
-	}
-}
 
 
 void	ft_unset(t_envp **data, t_minishell *av)
@@ -184,63 +164,7 @@ void	ft_unset(t_envp **data, t_minishell *av)
 // 	}
 // }
 
-void	print_export(t_envp *envp)
-{
-	t_envp *current;
 
-	current = envp;
-	while(current != NULL)
-	{
-			if (current->data != NULL)
-				printf("declare -x %s\n", current->data);
-		current = current->next;
-	}
-}
-
-void	ft_export(t_envp *data, t_minishell *av)
-{
-	t_envp *current;
-	int		i;
-	char	*tmp;
-
-	current = data;
-		av->has_no_option = false;
-	if (av->has_no_option == true)
-	{
-		print_export(data);
-		return;
-	}
-	else
-	{
-		 tmp = ft_get_the_Key(av->args[0]);
-		i = ft_strlen(tmp);
-		if (ft_strchr(av->args[0], '=') == NULL)
-			 return;
-		 else
-		while (current != NULL)
-		{
-		if (ft_strncmp(current->data, tmp, i) == 0)
-		{
-			// printf("%s\n", tmp);
-			remove_env_variable(data, tmp);
-			add_env_variable(data, av->args[0]);
-			break;
-		}
-		else
-			{
-			data = add_env_variable(data, av->args[0]);
-			break;
-			}
-		current = current->next;
-		}
-		while (data != NULL)
-		{
-			printf("%s\n", data->data);
-			data = data->next;
-
-		}
-	}
-}
 
 t_envp *ft_exit(t_envp *data, t_minishell *av)
 {
@@ -303,15 +227,15 @@ t_envp *ft_change_directory(t_envp *data,t_minishell *av)
 		tmp = ft_strjoin("OLDPWD=", oldpwd);
 		if (!tmp)
 			return (NULL);
-		data = add_env_variable(data, tmp);
+		add_env_variable(&data, tmp);
 		//data = remove_env_variable(data, "PWD");
 		free(tmp);
 		pwd = getcwd(NULL, 0);
 		tmp = ft_strjoin("PWD=", pwd);
 		if (!tmp)
 			return (NULL);
-		remove_env_variable(data, "PWD");
-		data = add_env_variable(data, tmp);
+		remove_env_variable(&data, "PWD");
+		add_env_variable(&data, tmp);
 		free(tmp);
 		free(oldpwd);
 		free(pwd);
@@ -390,6 +314,7 @@ void	parse(char **av, t_minishell *arg)
 	while (splt_args[i] != NULL)
 	{
 		splt_cmd = ft_split(splt_args[i], ' ');
+		arg->args = splt_cmd;
 		current->cmd_path = splt_cmd[0];
 		current->args = splt_cmd + 1;
 		if (splt_args[i + 1])
@@ -419,14 +344,14 @@ void	pipes_handle(t_minishell *arg, int old_fd, int *fd)
 	}
 }
 
-void	execbuiltin(t_minishell *arg, char *cmd, t_envp *hold)
+void	execbuiltin(t_minishell *arg, char *cmd, t_envp **hold)
 {
 	if (!ft_strcmp(cmd, "env"))
 		ft_env(hold);
 	else if (!ft_strcmp(cmd, "export"))
 		ft_export(hold, arg);
 	else if (!ft_strcmp(cmd, "unset"))
-		ft_unset(&hold, arg);
+		ft_unset(hold, arg);
 	// else if (!ft_strcmp(cmd, "echo"))
 	// 	ft_echo()
 	if (arg->prev->pipe == true)
@@ -437,6 +362,7 @@ int main(int ac, char **av, char **envp)
 {
 	t_minishell *arg;
 	t_envp	*hold;
+	t_envp	**data;
 	int		fd[2];
 	pid_t	pid;
 	int		cmd_n;
@@ -447,20 +373,6 @@ int main(int ac, char **av, char **envp)
 	hold = dup_env(envp);
 	arg->prev = arg;
 	parse(av, arg);
-	// while (arg)
-	// {
-	// 	printf("command's path : %s\n", arg->cmd_path);
-	// 	printf("argumnets : \n");
-	// 	int i = 0;
-	// 	while (arg->args[i])
-	// 	{
-	// 		printf("%s\n", arg->args[i]);
-	// 		i++;
-	// 	}
-	// 	printf("pipe : ");
-	// 	arg->pipe ? printf("TRUE\n") : printf("FALSE\n");
-	// 	arg = arg->next;
-	// }
 
 	cmd_n = 0;
 	pid = 0;
@@ -482,7 +394,7 @@ int main(int ac, char **av, char **envp)
 			{
 				pipes_handle(arg, old_fd, fd);
 				if (is_builtin == true)
-					execbuiltin(arg, arg->cmd_path, hold);
+					execbuiltin(arg, arg->cmd_path, &hold);
 				else
 					execve(arg->cmd_path, arg->args, envp);
 			}
@@ -493,9 +405,15 @@ int main(int ac, char **av, char **envp)
 				old_fd = fd[0];
 		}
 		else
-		execbuiltin(arg, arg->cmd_path, hold);
+		execbuiltin(arg, arg->cmd_path, &hold);
 		arg = arg->next;
 		is_builtin = false;
+	}
+	data = &hold;
+	while (*data != NULL)
+	{
+		printf("%s\n", (*data)->data);
+		*data = (*data)->next;
 	}
 }
 
@@ -504,6 +422,20 @@ int main(int ac, char **av, char **envp)
 	// printf("***********************\n");
 	// printf("***********************\n");
 	// printf("***********************\n");
+	// while (arg)
+	// {
+	// 	printf("command's path : %s\n", arg->cmd_path);
+	// 	printf("argumnets : \n");
+	// 	int i = 0;
+	// 	while (arg->args[i])
+	// 	{
+	// 		printf("%s\n", arg->args[i]);
+	// 		i++;
+	// 	}
+	// 	printf("pipe : ");
+	// 	arg->pipe ? printf("TRUE\n") : printf("FALSE\n");
+	// 	arg = arg->next;
+	// }
 	// printf("***********************\n");
 	// printf("***********************\n");
 	// printf("***********************\n");
