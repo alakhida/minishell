@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 // int		search_for(char *envp)
 // {

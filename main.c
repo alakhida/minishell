@@ -58,15 +58,13 @@ char *ft_get_the_Value (char *envp)
 	return (value);
 }
 
-void	ft_pwd(char **args, t_envp *envp)
+void	ft_pwd(t_envp *envp)
 {
 	int		i;
 	char	*pwd;
 
 	i = 0;
 	pwd = NULL;
-	if (ft_strcmp(args[1], "pwd") == 0)
-	{
 	while(envp != NULL)
 	{
 		if (ft_strncmp(envp->data, "PWD=", 4) == 0)
@@ -79,7 +77,7 @@ void	ft_pwd(char **args, t_envp *envp)
 		envp = envp->next;
 	}
 	printf("%s\n", pwd);
-	}
+	free(pwd);
 }
 
 char *ft_get_the_Key(char *envp)
@@ -220,7 +218,7 @@ void	parse(char **av, t_minishell *arg)
 	while (splt_args[i] != NULL)
 	{
 		splt_cmd = ft_split(splt_args[i], ' ');
-		arg->args = splt_cmd;
+		// arg->args = splt_cmd;
 		current->cmd_path = splt_cmd[0];
 		current->args = splt_cmd + 1;
 		if (splt_args[i + 1])
@@ -260,12 +258,12 @@ void	execbuiltin(t_minishell *arg, char *cmd, t_envp **hold)
 		ft_unset(hold, arg);
 	else if (!ft_strcmp(cmd, "cd"))
 		ft_change_directory(hold, arg);
-	// else if (!ft_strcmp(cmd, "pwd"))
-	// 	ft_pwd(arg->args, *hold);
-	// else if (!ft_strcmp(cmd, "exit"))
-	// 	*hold = ft_exit(*hold, arg);
-	// else if (!ft_strcmp(cmd, "echo"))
-	// 	ft_echo()
+	else if (!ft_strcmp(cmd, "echo"))
+		ft_echo(arg);
+	else if (!ft_strcmp(cmd, "pwd"))
+		ft_pwd(*hold);
+	else if (!ft_strcmp(cmd, "exit"))
+		ft_exit(*hold, arg);
 	if (arg->prev->pipe == true)
 		exit(0);
 }
@@ -285,6 +283,7 @@ int main(int ac, char **av, char **envp)
 	hold = dup_env(envp);
 	arg->prev = arg;
 	parse(av, arg);
+	// printf("%s\n", arg->cmd_path);
 
 	cmd_n = 0;
 	pid = 0;
@@ -322,13 +321,24 @@ int main(int ac, char **av, char **envp)
 		is_builtin = false;
 	}
 	data = &hold;
-	while (*data != NULL)
-	{
-		printf("%s\n", (*data)->data);
-		*data = (*data)->next;
-	}
+	// while (*data != NULL)
+	// {
+	// 	printf("%s\n", (*data)->data);
+	// 	*data = (*data)->next;
+	// }
 }
+// int main(int ac, char **av, char **env)
+// {
+// 	t_minishell *arg;
+// 	t_envp	*hold;
 
+// 	hold = dup_env(env);
+
+// 	arg = (t_minishell *)malloc(sizeof(t_minishell));
+// 	arg->args = av;
+// 	arg->prev = arg;
+// 	ft_change_directory(&hold, arg);
+// }
 
 	// printf("***********************\n");
 	// printf("***********************\n");

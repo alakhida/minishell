@@ -6,7 +6,7 @@
 /*   By: alakhida <alakhida@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 22:52:54 by alakhida          #+#    #+#             */
-/*   Updated: 2024/01/18 08:22:06 by alakhida         ###   ########.fr       */
+/*   Updated: 2024/01/19 05:03:43 by alakhida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ typedef enum e_redir {
 
 typedef struct s_minishell
 {
+	int			argc;
 	char				*cmds;
 	char				*cmd_path;
 	char 				**args;
@@ -52,14 +53,14 @@ typedef struct s_envp {
 } t_envp;
 
 char		*ft_get_the_Key(char *envp);
-int			echo_opt(const char *av);
-void		ft_echo(int argc, t_minishell *av);
+int			echo_opt(char **av);
+void		ft_echo(t_minishell *av);
 void		print_export(t_envp *envp);
 void		remove_env_variable(t_envp **data, const char *key);
 void		ft_export(t_envp **data, t_minishell *av);
 void		add_env_variable(t_envp **data, char *envp);
 void		ft_unset(t_envp **data, t_minishell *av);
-t_envp		*ft_change_directory(t_envp *data,t_minishell *av);
+t_envp		*ft_change_directory(t_envp **data,t_minishell *av);
 t_envp		*dup_env(char **envp);
 t_envp		*create_node(char *envp);
 

@@ -6,11 +6,11 @@
 /*   By: alakhida <alakhida@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 22:08:08 by alakhida          #+#    #+#             */
-/*   Updated: 2024/01/18 06:59:21 by alakhida         ###   ########.fr       */
+/*   Updated: 2024/01/19 05:00:33 by alakhida         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 bool	key_cmp(const char *s1, const char *s2)
 {

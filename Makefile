@@ -1,7 +1,12 @@
 NAME = minishell
 
-SRC = main.c utils.c dupenv.c built_in.c ft_export.c \
-	ft_unset.c ft_cd.c
+SRC = main.c \
+	./built_in/built_in.c \
+	./built_in/dupenv.c \
+	./built_in/ft_cd.c \
+	./built_in/ft_unset.c \
+	./built_in/ft_export.c \
+
 
 OBJ = $(SRC:.c=.o)
 
